@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "NVjF7jMraK3FWKv2YHlrnGwXDjMbz2j2lrmg9+R9QHrI7hCjuR2E0xNQ2VQQsQZ5legX1TxbliwKnhrMpwrAmg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\ab013r2\\source\\repos\\github\\Pulse\\solace\\Rates.Publisher\\Rates.Publisher.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ab013r2\\.nuget\\packages\\solacesystems.solclient.messaging\\10.17.0\\solacesystems.solclient.messaging.10.17.0.nupkg.sha512"
+  ],
+  "logs": []
+}
