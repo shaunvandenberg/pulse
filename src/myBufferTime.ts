@@ -2,7 +2,7 @@ import { Subscription, Observable, Subscriber } from 'rxjs';
 import { OperatorFunction, SchedulerLike } from 'rxjs';
 import { createOperatorSubscriber, OperatorSubscriber } from './OperatorSubscriber';
 import { asyncScheduler, SchedulerAction } from 'rxjs';
-import RawRate from './rawRate';
+import RawRate from './models/rawRate';
 
 // export function executeSchedule(
 //     parentSubscription: Subscription,

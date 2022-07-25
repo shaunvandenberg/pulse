@@ -1,3 +1,4 @@
+import './styles.css';
 import { app } from './application';
 import AppComponent from './components/app';
 import RateTickerComponent from './components/rate-ticker';

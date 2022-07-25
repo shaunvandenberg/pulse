@@ -1,43 +1,9 @@
-// const { resolve } = require('path');
-
-// module.exports = {
-//     entry: './src/main.js',
-//     output: {
-//         filename: 'prod.js',
-//         path: resolve( __dirname, 'dist' )
-//     },
-//     devServer: {
-//         static: {
-//             directory: resolve( __dirname, '' )
-//         }
-//     },
-//     target: 'node',
-//     mode: 'production'
-// }
-
-// /* webpack.config.js */
-// const path = require('path');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-// module.exports = {
-//     entry: './main.js',
-//     plugins: [
-//         new HtmlWebpackPlugin({
-//           title: 'Output Management',
-//         }),
-//     ],
-//     output: {
-//         path: path.resolve(__dirname, 'dist'),
-//         filename: 'bundle.js',
-//     },
-// };
-
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
 	entry: './src/index.ts',
-	watch: true,
+	watch: false,
     mode: 'development',
 	module: {
 		rules: [
@@ -46,6 +12,14 @@ module.exports = {
 				use: 'ts-loader',
 				exclude: /node_modules/,
 			},
+			{
+				test: /\.(tff)$/i,
+				type: 'asset/resource'
+			},
+			{
+				test: /\.css$/i,
+				use: ['style-loader', 'css-loader'],
+			}
 		]
 	},
 	resolve: {

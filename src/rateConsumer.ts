@@ -1,7 +1,12 @@
 import * as solace from 'solclientjs';
 import { Observable, Observer, fromEventPattern, map, tap, share, Subscription } from 'rxjs';
-import RawRate from './rawRate';
-import { rateStore, RateStore } from './rateStore';
+import RawRate from './models/rawRate';
+import { rateStore, RateStore } from './data/rateStore';
+
+export interface Message {
+    payload: Uint8Array | null;
+    ingestionTimestamp: number;
+}
 
 export class RateConsumer implements Observer<RawRate> {
     private store: RateStore;
@@ -20,7 +25,7 @@ export class RateConsumer implements Observer<RawRate> {
         
         this.props = {
             authenticationScheme: solace.AuthenticationScheme.BASIC,
-            url: 'wss://local.solace:1443',
+            url: 'wss://localhost:1443',
             vpnName: 'default',
             userName: 'client1.messaging.solace.cloud',
             password: 'password123',
@@ -35,11 +40,18 @@ export class RateConsumer implements Observer<RawRate> {
                     // TODO: Find a way to unsubscribe.
                 }
             )
-            .pipe(map((message: any) => {
-                const r = JSON.parse(message.getBinaryAttachment()) as RawRate;
+            .pipe(map((message: solace.Message) => {
+                return {
+                    payload: message.getBinaryAttachment(),
+                    ingestionTimestamp: performance.now()
+                };
+            }))
+            .pipe(map((message: Message) => {
+                const r = JSON.parse(message.payload.toString()) as RawRate;
 
                 // TODO: Might not be necessary - I think the rateId might already be populated.
                 r.rateId = `${r.clientId}-${r.primary}${r.secondary}${r.tenor}`;
+                r.ingestionTimestamp = message.ingestionTimestamp;
                 
                 return r;
             }))

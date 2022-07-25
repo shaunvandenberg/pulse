@@ -1,4 +1,4 @@
-import RawRate from "../rawRate";
+import RawRate from "./rawRate";
 
 export default class RateDecorator {
     private _rate: RawRate;

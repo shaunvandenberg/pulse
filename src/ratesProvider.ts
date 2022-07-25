@@ -1,7 +1,7 @@
 import * as solace from 'solclientjs';
 import { Observable, fromEvent, fromEventPattern, bufferTime, map } from 'rxjs';
 // import {  } from 'rxjs/operators';
-import RawRate from './rawRate';
+import RawRate from './models/rawRate';
 import { ratesBufferTime } from './myBufferTime';
 
 class RatesProvider {

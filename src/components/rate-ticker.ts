@@ -1,12 +1,136 @@
 import { Observer, Observable, Subscription } from 'rxjs';
-import { rateBuffer } from '../common/operators/rateButter';
+import { rateBuffer } from '../common/operators/rateBuffer';
 import RateComponent from './rate';
 import { rateConsumer } from '../rateConsumer';
-import { rateStore } from '../rateStore';
-import RawRate from '../rawRate';
+import { rateStore } from '../data/rateStore';
+import RawRate from '../models/rawRate';
 
 const template = document.createElement('template');
 template.innerHTML = `
+    <style>
+    @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      
+      .ticker-item {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+        border-right: 1px solid #ddd;
+        width: 100%;
+        height: 30px;
+      }
+      
+      #maindiv {
+        position: relative;
+        white-space: nowrap;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        overflow: hidden;
+        animation: fadeIn 2s ease-in;
+      }
+      
+      .marquee {
+        display: flex;
+        position: absolute;
+        overflow: hidden;
+        &.paused {
+          animation-play-state: paused !important;
+          -webkit-animation-play-state: paused !important;
+        }
+      
+        span {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-around;
+        }
+      }
+      
+      .ticker {
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.11);
+        background: white;
+        user-select: none;
+        .label {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 15px;
+          color: white;
+          height: 100%;
+          border-top-left-radius: 4px;
+          border-bottom-left-radius: 4px;
+          border: solid 1px #c6002d;
+          background-color: #dc0032;
+          white-space: nowrap;
+          padding: 0 10px;
+          .logo {
+            width: 32px;
+            height: 32px;
+            margin-right: 4px;
+          }
+          .fa-wifi {
+            margin-left: 15px;
+          }
+        }
+        &.detached {
+          margin: 10px;
+          box-shadow: 0px 0px 15px -5px #00000085;
+          height: calc(100% - 20px);
+          border-radius: 5px;
+          overflow: hidden;
+          .label {
+            -webkit-app-region: drag;
+            cursor: move;
+          }
+        }
+        &.offline {
+          .label {
+            background-color: #444444;
+            border-color: #444444;
+          }
+          #maindiv {
+            filter: opacity(0.5) saturate(0) contrast(0);
+          }
+        }
+      }
+      
+      .setup {
+        background-color: #fff;
+        font-size: 16px;
+        width: 40px;
+        min-width: 40px;
+        -webkit-box-shadow: -4px 0px 12px -10px rgba(0, 0, 0, 0.75);
+        -moz-box-shadow: -4px 0px 12px -10px rgba(0, 0, 0, 0.75);
+        box-shadow: -4px 0px 12px -10px rgba(0, 0, 0, 0.75);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .ticker-row {
+        display: flex;
+        flex-direction: row;
+      }
+
+      #rate-ticker {
+        display: flex;
+        flex-direction: row;
+      }
+      
+    </style>
+
     <section id="rate-ticker">
         Rates...
     </section>
@@ -17,6 +141,8 @@ class RateModel {
 
     }
 }
+
+const INTERVAL: number = 33;
 
 export default class RateTickerComponent extends HTMLElement implements Observer<Map<string, RawRate>> {
     private _$rateTicker: HTMLElement;
@@ -37,7 +163,7 @@ export default class RateTickerComponent extends HTMLElement implements Observer
 
         this._rateStream = rateConsumer
             .getRateStream()
-            .pipe(rateBuffer(33));
+            .pipe(rateBuffer(INTERVAL));
 
         // this._rates = new Map();
         // this._rateComponents = [];
@@ -59,13 +185,66 @@ export default class RateTickerComponent extends HTMLElement implements Observer
         this._$rateTicker.innerHTML = '';
 
         this._rates.push('728374356985065472-USDZARSP');
-        this._rates.push('728374356985065472-USDZARSP');
-        this._rates.push('728374356985065472-USDZARSP');
-        this._rates.push('728374356985065472-USDZARSP');
-        this._rates.push('728374356985065472-USDZARSP');
-        this._rates.push('728374356985065472-USDZARSP');
-        this._rates.push('728374356985065472-USDZARSP');
-        this._rates.push('728374356985065472-USDZARSP');
+        this._rates.push('728374356985065472-EURZARSP');
+        this._rates.push('728374356985065472-ZARJPYSP');
+        this._rates.push('728374356985065472-EURUSDSP');
+        this._rates.push('728374356985065472-GBPZARSP');
+        this._rates.push('728374356985065472-BLABLASP');
+
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
+        // this._rates.push('728374356985065472-USDZARSP');
 
         for (let i = 0; i < this._rates.length; i++) {
             const rateId = this._rates[i];
@@ -99,7 +278,7 @@ export default class RateTickerComponent extends HTMLElement implements Observer
 
             const newRate = value.get(rateId);
             if (newRate) {
-                const c = this._$rateTicker.childNodes[i] as RateComponent;
+                const c = this._$rateTicker.children[i] as RateComponent;
 
                 c.rate = newRate;
             } 
