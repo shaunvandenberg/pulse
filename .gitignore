@@ -104,6 +104,6 @@ dist
 .tern-port
 
 lib/
-
-#dotnet
 bin/
+obj/
+.vs/
