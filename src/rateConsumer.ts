@@ -25,10 +25,16 @@ export class RateConsumer implements Observer<RawRate> {
         
         this.props = {
             authenticationScheme: solace.AuthenticationScheme.BASIC,
-            url: 'wss://localhost:1443',
-            vpnName: 'default',
-            userName: 'client1.messaging.solace.cloud',
-            password: 'password123',
+            // url: 'wss://localhost:1443',
+            // url: 'ws://localhost:8008',
+            // vpnName: 'default',
+            // userName: 'client1.messaging.solace.cloud',
+            // password: 'password123',
+            url: 'ws://mrgjijghtum3r.messaging.solace.cloud:80',
+            vpnName: 'cib-rates-stream-non-prod',
+            userName: 'solace-cloud-client',
+            // userName: 'solace-cloud-client-test01',
+            password: 'ni3np37hc07t598anue1vei670',
             reconnectRetries: 1,
             sslValidateCertificate: false,
             windowSize: 255
@@ -50,8 +56,9 @@ export class RateConsumer implements Observer<RawRate> {
                 const r = JSON.parse(message.payload.toString()) as RawRate;
 
                 // TODO: Might not be necessary - I think the rateId might already be populated.
-                r.rateId = `${r.clientId}-${r.primary}${r.secondary}${r.tenor}`;
+                r.RateId = `${r.ClientId}-${r.Primary}${r.Secondary}${r.Tenor}`;
                 r.ingestionTimestamp = message.ingestionTimestamp;
+                r.arrivalTime = Date.now();
                 
                 return r;
             }))

@@ -1,0 +1,55 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-rates-publisher
+  namespace: cib-fx-trading-uat
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 0
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      run: mock-rates-publisher
+  template:
+    metadata:
+      labels:
+        run: mock-rates-publisher
+    spec:
+      containers:
+      - image: artifacts.bcp.absa.co.za/fx-trading-docker-local/mock-rates-publisher:1.0
+        imagePullPolicy: Always
+        name: mock-rates-publisher
+        resources:
+          limits:
+            cpu: "2"
+            memory: 2Gi
+          requests:
+            cpu: "2"
+            memory: 2Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: aafx-bff-api-regcred
+      - name: aafx-markets-deals-bff-command-host-regcred
+      - name: aafx-markets-deals-bff-query-host-regcred
+      - name: fx-trading-support-scheduler-host-regcred
+      - name: markets-deals-bff-command-host-regcred
+      - name: markets-deals-bff-query-host-regcred
+      - name: markets-deals-creditcheck-host-regcred
+      - name: markets-deals-forefront-host-regcred
+      - name: markets-deals-service-command-host-regcred
+      - name: markets-deals-service-query-host-regcred
+      - name: markets-deals-sync-host-regcred
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

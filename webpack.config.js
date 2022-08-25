@@ -29,11 +29,14 @@ module.exports = {
 		filename: 'bundle.js',
 		path: path.resolve(__dirname, 'dist'),
 	},
+	optimization: {
+		minimize: false
+	},
 	plugins: [
 		new HtmlWebpackPlugin({
             hash: true,
             title: 'My Awesome application',
-            myPageHeader: 'Hello World',
+            myPageHeader: 'pulse',
             template: './src/index.html'
         })
 	],

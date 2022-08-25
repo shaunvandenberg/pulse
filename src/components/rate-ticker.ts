@@ -142,17 +142,20 @@ class RateModel {
     }
 }
 
-const INTERVAL: number = 33;
+const INTERVAL: number = 150;
 
 export default class RateTickerComponent extends HTMLElement implements Observer<Map<string, RawRate>> {
+// export default class RateTickerComponent extends HTMLElement implements Observer<RawRate> {
     private _$rateTicker: HTMLElement;
     private _rateStream: Observable<Map<string, RawRate>>;
+    // private _rateStream: Observable<RawRate>;
     private _subscription: Subscription;
     // private _rateConfig: string[];
     // private _rates: Map<string, RateComponent>;
     // private _rateComponents: string[]; 
     private _rates: string[]; 
-    
+    private _count: number;
+
     public constructor() {
         super();
 
@@ -170,6 +173,8 @@ export default class RateTickerComponent extends HTMLElement implements Observer
         this._rates = [];
 
         this.configureRates();
+
+        this._count = 0;
     }
 
     private loadRateConfig() : string[] {
@@ -284,6 +289,22 @@ export default class RateTickerComponent extends HTMLElement implements Observer
             } 
         }
     };
+
+  //   public next(value: RawRate) : void {
+  //     for (let i = 0; i < this._rates.length; i++) {
+  //         const rateId = this._rates[i];
+
+  //         if (rateId === value.RateId) {
+  //             const c = this._$rateTicker.children[i] as RateComponent;
+
+  //             c.rate = value;
+  //         } 
+  //     }
+
+  //     this._count++;
+
+  //     // console.log(this._count);
+  // };
 
     public error(_err: any) : void {
         throw new Error('');

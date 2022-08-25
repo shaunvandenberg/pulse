@@ -107,3 +107,4 @@ lib/
 bin/
 obj/
 .vs/
+out/

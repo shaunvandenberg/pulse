@@ -29,7 +29,7 @@ export function rateBuffer(bufferTimeSpan: number, ...otherArgs: any[]): Operato
 
         return new Observable<Map<string, RawRate>>(subscriber => {
             const keyGen = (rate: RawRate) => {
-                var rateId = `${rate.clientId}-${rate.primary}${rate.secondary}${rate.tenor}`;
+                var rateId = `${rate.ClientId}-${rate.Primary}${rate.Secondary}${rate.Tenor}`;
         
                 return rateId;
             };

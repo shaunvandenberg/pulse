@@ -264,8 +264,8 @@ export default class RateComponent extends HTMLElement {
     }
 
     private getCurrencyPair(rate: RawRate): string {
-        const primary = currencies.get(rate.primary)?.display || rate.primary;
-        const counter = currencies.get(rate.secondary)?.display || rate.secondary;
+        const primary = currencies.get(rate.Primary)?.display || rate.Primary;
+        const counter = currencies.get(rate.Secondary)?.display || rate.Secondary;
         
         return `${primary}/${counter}`;
     }
@@ -287,8 +287,8 @@ export default class RateComponent extends HTMLElement {
 
         if (oldRate) {
             // Assuming these are valid rates.
-            isUp = newRate.tiers[0].bid > oldRate.tiers[0].bid;
-            isDown = newRate.tiers[0].bid < oldRate.tiers[0].bid;
+            isUp = newRate.Tiers[0].Bid > oldRate.Tiers[0].Bid;
+            isDown = newRate.Tiers[0].Bid < oldRate.Tiers[0].Bid;
         }
 
         if (isUp) {
@@ -297,8 +297,8 @@ export default class RateComponent extends HTMLElement {
             this._$rate.className = 'red';
         }
 
-        const bid = Formatter.formatRate(currencyPair, newRate.tiers[0].bid);
-        const ask = Formatter.formatRate(currencyPair, newRate.tiers[0].ask);
+        const bid = Formatter.formatRate(currencyPair, newRate.Tiers[0].Bid);
+        const ask = Formatter.formatRate(currencyPair, newRate.Tiers[0].Ask);
 
         this._$smallNumbers[0].innerHTML = bid[0];
         this._$largeNumbers[0].innerHTML = bid[1];

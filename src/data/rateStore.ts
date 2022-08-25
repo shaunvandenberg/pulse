@@ -12,7 +12,7 @@ export class RateStore {
     }
 
     public set(rate: RawRate) : void {
-        this.rates.set(rate.rateId, rate);
+        this.rates.set(rate.RateId, rate);
     }
 }
 

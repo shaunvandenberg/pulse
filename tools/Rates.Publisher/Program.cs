@@ -5,14 +5,32 @@ using System.Text;
 using System.Text.Json;
 
 // TODO: Perhaps use env variables to drive configuration...
-const string Host = "wss://localhost:1443";
-const string VPNName = "default";
-const string Username = "client1.messaging.solace.cloud";
-const string Password = "password123";
-const string TrustStoreDir = "./Certs";
+//const string Host = "wss://localhost:1443";
+//const string VPNName = "default";
+//const string Username = "client1.messaging.solace.cloud";
+//const string Password = "password123";
+//const string TrustStoreDir = "./Certs";
+//const string Topic = "fx-trading/rates";
 const int DefaultReconnectRetries = 3;
+const int Messages = 100000;
+
+//const string Host = "ws://mrgjijghtum3r.messaging.solace.cloud:80";
+//const string VPNName = "cib-rates-stream-non-prod";
+//const string Username = "solace-cloud-client";
+//const string Password = "ni3np37hc07t598anue1vei670";
+//const string Topic = "fx-trading/rates";
+
+const string Host = "tcp://mrgjijghtum3r.messaging.solace.cloud:55555";
+const string VPNName = "cib-rates-stream-non-prod";
+const string Username = "solace-cloud-client";
+const string Password = "ni3np37hc07t598anue1vei670";
 const string Topic = "fx-trading/rates";
-const int Messages = 5000;
+const string Proxy = "%httpc://vsearray.intra.absaafrica:80";
+
+var options = new JsonSerializerOptions
+{
+    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+};
 
 var cfp = new ContextFactoryProperties()
 {
@@ -29,15 +47,16 @@ try
 
     var sessionProps = new SessionProperties
     {
-        Host = Host,
+        Host = Host + Proxy,
+        //Host = Host,
         VPNName = VPNName,
         ReconnectRetries = DefaultReconnectRetries,
         GdWithWebTransport = true,
         AuthenticationScheme = AuthenticationSchemes.BASIC,
         SSLValidateCertificateHost = false,
         UserName = Username,
-        Password = Password,
-        SSLTrustStoreDir = TrustStoreDir
+        Password = Password
+        //SSLTrustStoreDir = TrustStoreDir
     };
 
     Console.WriteLine("Connecting to {0} on {1}...", VPNName, Host);
@@ -97,6 +116,8 @@ catch (Exception ex)
 finally
 {
     ContextFactory.Instance.Cleanup();
+
+    //Console.ReadKey();
 }
 
 static IEnumerable<CurrencyPairConfig> LoadConfig()
@@ -104,10 +125,10 @@ static IEnumerable<CurrencyPairConfig> LoadConfig()
     var config = new List<CurrencyPairConfig>();
 
     config.Add(new CurrencyPairConfig("USD", "ZAR", 1.0001m, 1.0001m));
-    config.Add(new CurrencyPairConfig("EUR", "ZAR", 10001.0001m, 10001.0001m));
-    config.Add(new CurrencyPairConfig("EUR", "USD", 20001.0001m, 20001.0001m));
-    config.Add(new CurrencyPairConfig("ZAR", "JPY", 30001.0001m, 30001.0001m));
-    config.Add(new CurrencyPairConfig("GBP", "ZAR", 40001.0001m, 40001.0001m));
+    //config.Add(new CurrencyPairConfig("EUR", "ZAR", 10001.0001m, 10001.0001m));
+    //config.Add(new CurrencyPairConfig("EUR", "USD", 20001.0001m, 20001.0001m));
+    //config.Add(new CurrencyPairConfig("ZAR", "JPY", 30001.0001m, 30001.0001m));
+    //config.Add(new CurrencyPairConfig("GBP", "ZAR", 40001.0001m, 40001.0001m));
 
     return config;
 }
@@ -122,6 +143,7 @@ static Rate CreateRate(string primary, string secondary, decimal bid, decimal as
         Primary = primary,
         Secondary = secondary,
         Tenor = "SP",
+        Topic = Topic,
         Tiers = new List<Tier>
         {
             new Tier
@@ -135,10 +157,12 @@ static Rate CreateRate(string primary, string secondary, decimal bid, decimal as
         },
         Token = Guid.NewGuid().ToString(),
         Status = 0,
+        PointMultiplier = 1,
+        Statistics = new Statistics()
     };
 }
 
-static void PublishRates(string primary, string secondary, decimal bidStart, decimal askStart, ISession session)
+void PublishRates(string primary, string secondary, decimal bidStart, decimal askStart, ISession session)
 {
     var watch = new Stopwatch();
 
@@ -155,6 +179,8 @@ static void PublishRates(string primary, string secondary, decimal bidStart, dec
 
         bid += 1.0001m;
         ask += 1.0001m;
+
+        //Thread.Sleep(1);
     }
 
     watch.Stop();
@@ -162,16 +188,20 @@ static void PublishRates(string primary, string secondary, decimal bidStart, dec
     Console.WriteLine("Published {0} messages in {1} ms.", Messages, watch.ElapsedMilliseconds);
 }
 
-static void PublishRate(ISession session, Rate rate)
+void PublishRate(ISession session, Rate rate)
 {
     using IMessage message = ContextFactory.Instance.CreateMessage();
 
     message.Destination = ContextFactory.Instance.CreateTopic(Topic);
-    message.BinaryAttachment = Encoding.ASCII.GetBytes(JsonSerializer.Serialize(rate, new JsonSerializerOptions
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    }));
+
+    //message.BinaryAttachment = Encoding.ASCII.GetBytes(JsonSerializer.Serialize(rate, new JsonSerializerOptions
+    //{
+    //    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    //}));
+
+    message.BinaryAttachment = Encoding.ASCII.GetBytes(JsonSerializer.Serialize(rate));
     message.DeliveryMode = MessageDeliveryMode.Direct;
+    message.ElidingEligible = true;
 
     //Console.WriteLine("Publishing trade...");
 
