@@ -1,3 +1,4 @@
+import { session } from './common/messaging/session';
 import { rateConsumer } from "./rateConsumer";
 
 export type registerComponents = (registry: Map<string, CustomElementConstructor>) => void;
@@ -16,6 +17,7 @@ export class Application {
     }
 
     public run() {
+        session.connect();
         rateConsumer.start();
         
         this._componentRegistry.forEach((value: CustomElementConstructor, key: string) => {

@@ -4,6 +4,7 @@ const template = document.createElement('template');
 template.innerHTML = `
     <section id="container">
         <rate-ticker-component></rate-ticker-component>
+        <deal-ticket-component></deal-ticket-component>
         <button id="subscribe">Subscribe</button>
     </section>
 `;
