@@ -21,7 +21,7 @@ export default class DealTicketComponent extends HTMLElement {
 
     private async onBookDealClick() {
         const response = await session.request('tutorial/trade');
-
+        
         console.log(response.getBinaryAttachment());
     }
 

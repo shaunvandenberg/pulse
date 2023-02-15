@@ -63,7 +63,7 @@ export class SolaceSession implements Session {
             url: 'ws://localhost:8008',
             vpnName: 'default',
             userName: 'client1.messaging.solace.cloud',
-            // password: 'password123',
+            password: 'password123',
             // url: 'ws://mrgjijghtum3r.messaging.solace.cloud:80',
             // vpnName: 'cib-rates-stream-non-prod',
             // userName: 'solace-cloud-client',
@@ -153,7 +153,7 @@ export class SolaceSession implements Session {
             request.setDestination(solace.SolclientFactory.createTopicDestination(topicName));
             request.setSdtContainer(solace.SDTField.create(solace.SDTFieldType.STRING, requestText));
             request.setDeliveryMode(solace.MessageDeliveryModeType.DIRECT);
-    
+
             console.log('Sending request "' + requestText + '" to topic "' + topicName + '"...');
     
             try {

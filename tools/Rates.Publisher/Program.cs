@@ -6,26 +6,28 @@ using System.Text.Json;
 
 // TODO: Perhaps use env variables to drive configuration...
 //const string Host = "wss://localhost:1443";
-//const string VPNName = "default";
-//const string Username = "client1.messaging.solace.cloud";
-//const string Password = "password123";
-//const string TrustStoreDir = "./Certs";
+const string Host = "ws://localhost:8008";
+const string VPNName = "default";
+const string Username = "client1.messaging.solace.cloud";
+const string Password = "password123";
+const string TrustStoreDir = "./Certs";
 //const string Topic = "fx-trading/rates";
 const int DefaultReconnectRetries = 3;
 const int Messages = 100000;
 
-//const string Host = "ws://mrgjijghtum3r.messaging.solace.cloud:80";
+// const string Host = "ws://mrgjijghtum3r.messaging.solace.cloud:80";
+// const string VPNName = "cib-rates-stream-non-prod";
+// const string Username = "solace-cloud-client";
+// const string Password = "ni3np37hc07t598anue1vei670";
+const string Topic = "fx-trading/rates";
+//const string Topic = "tutorial/trade";
+
+//const string Host = "tcp://mrgjijghtum3r.messaging.solace.cloud:55555";
 //const string VPNName = "cib-rates-stream-non-prod";
 //const string Username = "solace-cloud-client";
 //const string Password = "ni3np37hc07t598anue1vei670";
 //const string Topic = "fx-trading/rates";
-
-const string Host = "tcp://mrgjijghtum3r.messaging.solace.cloud:55555";
-const string VPNName = "cib-rates-stream-non-prod";
-const string Username = "solace-cloud-client";
-const string Password = "ni3np37hc07t598anue1vei670";
-const string Topic = "fx-trading/rates";
-const string Proxy = "%httpc://vsearray.intra.absaafrica:80";
+//const string Proxy = "%httpc://vsearray.intra.absaafrica:80";
 
 var options = new JsonSerializerOptions
 {
@@ -47,16 +49,16 @@ try
 
     var sessionProps = new SessionProperties
     {
-        Host = Host + Proxy,
-        //Host = Host,
+        //Host = Host + Proxy,
+        Host = Host,
         VPNName = VPNName,
         ReconnectRetries = DefaultReconnectRetries,
-        GdWithWebTransport = true,
+        //GdWithWebTransport = true,
         AuthenticationScheme = AuthenticationSchemes.BASIC,
         SSLValidateCertificateHost = false,
         UserName = Username,
-        Password = Password
-        //SSLTrustStoreDir = TrustStoreDir
+        Password = Password,
+        SSLTrustStoreDir = TrustStoreDir
     };
 
     Console.WriteLine("Connecting to {0} on {1}...", VPNName, Host);
@@ -201,7 +203,7 @@ void PublishRate(ISession session, Rate rate)
 
     message.BinaryAttachment = Encoding.ASCII.GetBytes(JsonSerializer.Serialize(rate));
     message.DeliveryMode = MessageDeliveryMode.Direct;
-    message.ElidingEligible = true;
+    message.ElidingEligible = false;
 
     //Console.WriteLine("Publishing trade...");
 
